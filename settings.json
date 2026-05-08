@@ -1,0 +1,61 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/.claude/skills/speak/**)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "day=$(date +%-d); case $day in 1|21|31) s=st;; 2|22) s=nd;; 3|23) s=rd;; *) s=th;; esac; echo \"Session started: $(date +'%B') ${day}${s}, $(date +'%Y') $(date +'%I:%M %p')\"; echo $(date +%s) > /tmp/session_start_time"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "day=$(date +%-d); case $day in 1|21|31) s=st;; 2|22) s=nd;; 3|23) s=rd;; *) s=th;; esac; echo \"Current date/time: $(date +'%B') ${day}${s}, $(date +'%Y') $(date +'%I:%M %p')\""
+          },
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport sys, select, json, time, os, glob, subprocess\nif not select.select([sys.stdin], [], [], 0.5)[0]:\n    sys.exit(0)\ntry:\n    data = json.load(sys.stdin)\nexcept:\n    sys.exit(0)\nprompt = data.get('prompt', '').strip().lower()\nif prompt == 'ok':\n    my_pid = os.getpid()\n    for p in glob.glob('/proc/[0-9]*/cmdline'):\n        try:\n            pid = int(p.split('/')[2])\n            if pid == my_pid:\n                continue\n            cmd = open(p, 'rb').read().replace(b'\\x00', b' ').decode()\n            if 'agents/alert/alert.py' in cmd:\n                os.kill(pid, 15)\n        except:\n            pass\n    snooze = str(int(time.time()) + 300)\n    subprocess.run(f'echo {snooze} > /home/cade/.alert_snoozed_until', shell=True)\n    sys.stdout.write('Alert snoozed for 5 min.\\n')\n    sys.stdout.flush()\nelif prompt == 'break':\n    subprocess.Popen('DISPLAY=:0 ~/venv/bin/python /media/cade/E/agents/blackout/blackout.py 2>/dev/null', shell=True)\n    sys.stdout.write('Screens blacked out. Rest up.\\n')\n    sys.stdout.flush()\n\""
+          },
+          {
+            "type": "command",
+            "command": "if [ -f /tmp/session_start_time ]; then start=$(cat /tmp/session_start_time); now=$(date +%s); elapsed=$(( now - start )); hours=$(( elapsed / 3600 )); mins=$(( (elapsed % 3600) / 60 )); snoozed=0; if [ -f /home/cade/.alert_snoozed_until ]; then snooze_until=$(cat /home/cade/.alert_snoozed_until); [ $now -lt $snooze_until ] && snoozed=1; fi; if [ $elapsed -ge 14400 ]; then echo \"WALK JOSH REMINDER: You have been working for ${hours}h ${mins}m. Time to walk Josh.\"; if [ $snoozed -eq 0 ]; then DISPLAY=:0 source ~/venv/bin/activate 2>/dev/null; DISPLAY=:0 ~/venv/bin/python /media/cade/E/agents/alert/alert.py \"WALK JOSH — ${hours}h ${mins}m at the desk\" 2>/dev/null & fi; elif [ $elapsed -ge 5400 ]; then last_break=0; [ -f /tmp/last_break_reminder ] && last_break=$(cat /tmp/last_break_reminder); since_remind=$(( now - last_break )); if [ $since_remind -ge 300 ] && [ $snoozed -eq 0 ]; then echo $(date +%s) > /tmp/last_break_reminder; echo \"WORKOUT REMINDER: You have been working for ${hours}h ${mins}m. Time for a workout break.\"; DISPLAY=:0 ~/venv/bin/python /media/cade/E/agents/alert/alert.py \"WORKOUT BREAK — ${hours}h ${mins}m at the desk\" 2>/dev/null & fi; fi; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport json, sys, os\ndata = json.load(sys.stdin)\nedited = data.get('tool_input', {}).get('file_path', '')\nscreens = {\n    2: ('/tmp/agent_screen2_file.txt', '/tmp/agent_display_2.html', '/tmp/agent_title_2.txt'),\n    3: ('/tmp/agent_screen3_file.txt', '/tmp/agent_display_3.html', '/tmp/agent_title_3.txt'),\n}\nfor screen_num, (tracker, display, title_file) in screens.items():\n    try:\n        with open(tracker) as f: current = f.read().strip()\n    except FileNotFoundError:\n        continue\n    if current and current == edited:\n        with open(edited) as f: content = f.read()\n        content = content.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace('\\\\n','<br>')\n        html = f'<!DOCTYPE html><html><head><style>html,body{{height:100%;margin:0}}body{{background:#1e1e1e;color:#d4d4d4;font-family:monospace;font-size:16px;padding:40px;line-height:1.8;box-sizing:border-box}}</style></head><body>' + content + '</body></html>'\n        with open(display, 'w') as f: f.write(html)\n        with open(title_file, 'w') as f: f.write(os.path.basename(edited) + f' — Screen {screen_num}')\n\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git -C /media/cade/E add -A && git -C /media/cade/E commit -m 'Session end auto-commit' --allow-empty && git -C /media/cade/E push"
+          }
+        ]
+      }
+    ]
+  }
+}
