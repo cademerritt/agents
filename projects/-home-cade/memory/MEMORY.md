@@ -8,3 +8,6 @@
 6. [session-05-07-2026-2011.md](session-05-07-2026-2011.md) — Session May 7 2026 — tracker tested, ok/break hookify built, UserPromptSubmit caching discovered
 7. [project_printer_hookify.md](project_printer_hookify.md) — Fix printer next session, print hard copies of hookify list; suspect overwriting
 8. [session-05-07-2026-2104.md](session-05-07-2026-2104.md) — Session May 7 2026 Part 2 — screen 3 confirmed, printer + hookify print plan saved
+9. [session-05-08-2026-2031.md](session-05-08-2026-2031.md) — Session May 8 2026 — browser rebuilt with syntax highlighting, hooks consolidated into agent file, cron alert agent drafted
+10. [project_agent_manager.md](project_agent_manager.md) — Future project: home and work assistant program to manage agents
+11. [session-05-09-2026-1252.md](session-05-09-2026-1252.md) — Session May 9 2026 — soft reminder system live, browser dagger, hook v2, P pause, sleep/wake diagnosed
