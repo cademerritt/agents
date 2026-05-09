@@ -12,3 +12,4 @@
 10. [project_agent_manager.md](project_agent_manager.md) — Future project: home and work assistant program to manage agents
 11. [session-05-09-2026-1252.md](session-05-09-2026-1252.md) — Session May 9 2026 — soft reminder system live, browser dagger, hook v2, P pause, sleep/wake diagnosed
 12. [session-05-09-2026-1412.md](session-05-09-2026-1412.md) — Session May 9 2026 afternoon — sleep fix complete, spacebar to wake, s2idle + NVIDIA + X11
+13. [session-05-09-2026-1632.md](session-05-09-2026-1632.md) — Session May 9 2026 prevning — master todo.md built, COMPASS F9 mode, GPU fixed (cu128), start_agents.sh
