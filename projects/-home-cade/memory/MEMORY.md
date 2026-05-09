@@ -14,3 +14,5 @@
 12. [session-05-09-2026-1412.md](session-05-09-2026-1412.md) — Session May 9 2026 afternoon — sleep fix complete, spacebar to wake, s2idle + NVIDIA + X11
 13. [session-05-09-2026-1632.md](session-05-09-2026-1632.md) — Session May 9 2026 prevning — master todo.md built, COMPASS F9 mode, GPU fixed (cu128), start_agents.sh
 14. [session-05-09-2026-1655.md](session-05-09-2026-1655.md) — Session May 9 2026 evening — browsers fixed, COMPASS GNOME autostart, tiny model CPU, F9 confirmed working
+15. [feedback_browser_ipc.md](feedback_browser_ipc.md) — Browser has no IPC socket — to show a file, kill and relaunch with new path argument
+16. [session-05-09-2026-1923.md](session-05-09-2026-1923.md) — Session May 9 2026 evening pt2 — COMPASS removed, RTX 5070 at Micro Center $556, every-5-msg CLAUDE.md hook
