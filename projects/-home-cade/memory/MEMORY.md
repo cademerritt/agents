@@ -13,3 +13,4 @@
 11. [session-05-09-2026-1252.md](session-05-09-2026-1252.md) — Session May 9 2026 — soft reminder system live, browser dagger, hook v2, P pause, sleep/wake diagnosed
 12. [session-05-09-2026-1412.md](session-05-09-2026-1412.md) — Session May 9 2026 afternoon — sleep fix complete, spacebar to wake, s2idle + NVIDIA + X11
 13. [session-05-09-2026-1632.md](session-05-09-2026-1632.md) — Session May 9 2026 prevning — master todo.md built, COMPASS F9 mode, GPU fixed (cu128), start_agents.sh
+14. [session-05-09-2026-1655.md](session-05-09-2026-1655.md) — Session May 9 2026 evening — browsers fixed, COMPASS GNOME autostart, tiny model CPU, F9 confirmed working
