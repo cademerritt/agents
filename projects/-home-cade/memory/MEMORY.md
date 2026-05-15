@@ -16,3 +16,4 @@
 14. [session-05-09-2026-1655.md](session-05-09-2026-1655.md) — Session May 9 2026 evening — browsers fixed, COMPASS GNOME autostart, tiny model CPU, F9 confirmed working
 15. [feedback_browser_ipc.md](feedback_browser_ipc.md) — Browser has no IPC socket — to show a file, kill and relaunch with new path argument
 16. [session-05-09-2026-1923.md](session-05-09-2026-1923.md) — Session May 9 2026 evening pt2 — COMPASS removed, RTX 5070 at Micro Center $556, every-5-msg CLAUDE.md hook
+17. [session-05-14-2026-2119.md](session-05-14-2026-2119.md) — Session May 14 2026 — Jarvis voice assistant built end-to-end, Ollama+llama3.2:3b, LangChain course setup, CLAUDE.md restored
