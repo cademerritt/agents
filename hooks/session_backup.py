@@ -5,11 +5,12 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
-DEST_BASE = Path("/media/cade/F-WORM/backups")
+DEST_BASE = Path("/media/cade/F/backups")
 SESSION_START_FILE = Path("/tmp/session_start_time")
 
 WATCH_DIRS = [
     Path("/home/cade"),
+    Path("/etc"),
 ]
 
 GIT_REPOS = [
@@ -42,9 +43,9 @@ def fworm_backup(session_start):
                 except Exception:
                     errors += 1
     if copied > 0:
-        print(f"F-WORM backup: {copied} files → {dest_dir} ({errors} errors)")
+        print(f"F backup: {copied} files → {dest_dir} ({errors} errors)")
     else:
-        print("F-WORM backup: no changed files")
+        print("F backup: no changed files")
 
 def github_push():
     for repo in GIT_REPOS:
