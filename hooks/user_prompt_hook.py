@@ -3,6 +3,7 @@ import sys
 import json
 
 CLAUDE_MD_PATH = "/home/cade/CLAUDE.md"
+MEMORY_MD_PATH = "/home/cade/.claude/projects/-home-cade/memory/MEMORY.md"
 COUNTER_FILE = "/tmp/claude_msg_count"
 INJECT_EVERY = 5
 
@@ -17,9 +18,9 @@ def set_count(n):
     with open(COUNTER_FILE, "w") as f:
         f.write(str(n))
 
-def load_claude_md():
+def load_file(path):
     try:
-        with open(CLAUDE_MD_PATH) as f:
+        with open(path) as f:
             return f.read()
     except:
         return ""
@@ -30,10 +31,16 @@ def main():
     set_count(count)
 
     if count % INJECT_EVERY == 0:
-        claude_md = load_claude_md()
+        claude_md = load_file(CLAUDE_MD_PATH)
+        memory_md = load_file(MEMORY_MD_PATH)
+        reminder = ""
         if claude_md:
+            reminder += f"[CLAUDE.md REMINDER]\n{claude_md}\n[END REMINDER]\n\n"
+        if memory_md:
+            reminder += f"[MEMORY.md REMINDER]\n{memory_md}\n[END REMINDER]\n\n"
+        if reminder:
             prompt = data.get("prompt", "")
-            data["prompt"] = f"[CLAUDE.md REMINDER]\n{claude_md}\n[END REMINDER]\n\n{prompt}"
+            data["prompt"] = reminder + prompt
 
     print(json.dumps(data))
 
