@@ -2,11 +2,10 @@
 import sys
 import os
 import re
-import base64
 from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtCore import QTimer, Qt, QUrl
 
 SCREENS = {
     1: (0,    0,   1920, 1080),
@@ -16,19 +15,7 @@ SCREENS = {
 
 REMINDER_FILE = Path("/tmp/reminder.txt")
 
-DAGGER_IMG = Path("/home/cade/agents/browser/dagger_extracted.png")
-
-def _dagger_html():
-    b64 = base64.b64encode(DAGGER_IMG.read_bytes()).decode()
-    return f"""<!DOCTYPE html>
-<html><head><style>
-  body {{ background:#ffffff; display:flex; justify-content:center;
-         align-items:center; height:100vh; margin:0; }}
-  img {{ width:474px; height:528px; object-fit:contain; transform:rotate(180deg); }}
-</style></head>
-<body><img src="data:image/png;base64,{b64}"></body></html>"""
-
-WAITING_HTML = _dagger_html()
+WALLPAPER = Path("/home/cade/.local/share/backgrounds/2026-04-18-17-10-32-Picture1.png")
 
 DAGGER_HTML = """<!DOCTYPE html>
 <html><head><style>
@@ -46,7 +33,8 @@ DAGGER_HTML = """<!DOCTYPE html>
 CONTENT_TEMPLATE = """<!DOCTYPE html>
 <html><head><style>
   body {{ background:#1a1a1a; color:#e0e0e0; font-family:monospace;
-          padding:32px; margin:0; line-height:1.7; font-size:15px; }}
+          padding:32px; margin:0; line-height:1.7; font-size:15px;
+          word-wrap:break-word; overflow-wrap:break-word; }}
   h1, h2, h3 {{ color:#61afef; margin-top:1.4em; }}
   code {{ background:#2d2d2d; padding:2px 6px; border-radius:3px; color:#98c379; }}
   pre {{ background:#2d2d2d; padding:16px; border-radius:6px; overflow-x:auto; margin:12px 0; }}
@@ -85,9 +73,17 @@ def md_to_html(text):
     # horizontal rule
     text = re.sub(r'^---$', r'<hr>', text, flags=re.MULTILINE)
 
-    # numbered and bullet lists
-    text = re.sub(r'^\d+\. (.+)$', r'<li>\1</li>', text, flags=re.MULTILINE)
-    text = re.sub(r'^[-*] (.+)$',  r'<li>\1</li>', text, flags=re.MULTILINE)
+    # numbered lists → <ol>
+    text = re.sub(r'^\d+\. (.+)$', r'<OL_ITEM>\1</OL_ITEM>', text, flags=re.MULTILINE)
+    text = re.sub(r'(<OL_ITEM>.*?</OL_ITEM>\n{0,2})+',
+                  lambda m: '<ol>\n' + m.group(0).replace('<OL_ITEM>', '<li>').replace('</OL_ITEM>', '</li>') + '</ol>\n',
+                  text, flags=re.DOTALL)
+
+    # bullet lists → <ol> (always numbered)
+    text = re.sub(r'^[-*] (.+)$', r'<UL_ITEM>\1</UL_ITEM>', text, flags=re.MULTILINE)
+    text = re.sub(r'(<UL_ITEM>.*?</UL_ITEM>\n{0,2})+',
+                  lambda m: '<ol>\n' + m.group(0).replace('<UL_ITEM>', '<li>').replace('</UL_ITEM>', '</li>') + '</ol>\n',
+                  text, flags=re.DOTALL)
 
     # plain lines → paragraphs (skip lines already wrapped in tags)
     lines = text.split('\n')
@@ -107,8 +103,9 @@ class BrowserWindow(QMainWindow):
         self.setWindowFlags(Qt.WindowType.Window)
         x, y, w, h = SCREENS[screen_num]
         self.setGeometry(x, y, w, h)
-        self.setWindowTitle(f"Browser — Screen {screen_num}")
         self.content_path = Path(content_path) if content_path else None
+        title = self.content_path.name if self.content_path else f"Browser — Screen {screen_num}"
+        self.setWindowTitle(title)
         self.reminder_active = False
 
         self.view = QWebEngineView()
@@ -119,24 +116,37 @@ class BrowserWindow(QMainWindow):
         self.setGeometry(x, y, w, h)
 
         # wmctrl move after window manager settles
-        title = f"Browser — Screen {screen_num}"
         QTimer.singleShot(800, lambda t=title, px=x, py=y, pw=w, ph=h: os.system(
             f'DISPLAY=:0 wmctrl -ir $(DISPLAY=:0 wmctrl -l | grep "{t}" | awk \'{{print $1}}\') '
             f'-e 0,{px},{py},{pw},{ph}'
         ))
 
+        self._content_mtime = self.content_path.stat().st_mtime if self.content_path and self.content_path.exists() else None
+
         self.timer = QTimer()
         self.timer.timeout.connect(self.check_reminder)
         self.timer.start(3000)
+
+        self.watcher = QTimer()
+        self.watcher.timeout.connect(self.check_file_changed)
+        self.watcher.start(2000)
 
     def load_default(self):
         if self.content_path and self.content_path.exists():
             text = self.content_path.read_text(encoding="utf-8")
             content = md_to_html(text)
             html = CONTENT_TEMPLATE.format(content=content)
+            self.view.setHtml(html)
         else:
-            html = WAITING_HTML
-        self.view.setHtml(html)
+            self.view.load(QUrl.fromLocalFile(str(WALLPAPER)))
+
+    def check_file_changed(self):
+        if not self.content_path or not self.content_path.exists() or self.reminder_active:
+            return
+        mtime = self.content_path.stat().st_mtime
+        if mtime != self._content_mtime:
+            self._content_mtime = mtime
+            self.load_default()
 
     def check_reminder(self):
         exists = REMINDER_FILE.exists()
