@@ -1,0 +1,60 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/.claude/skills/speak/**)",
+      "Bash(git -C /media/cade/E *)",
+      "Bash(git -C /home/cade/.claude *)",
+      "Bash(systemctl suspend)",
+      "Write(/home/cade/.claude/projects/-home-cade/memory/*)",
+      "Edit(/home/cade/.claude/projects/-home-cade/memory/*)",
+      "Edit(/media/cade/E/CLAUDE.md)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "day=$(date +%-d); case $day in 1|21|31) s=st;; 2|22) s=nd;; 3|23) s=rd;; *) s=th;; esac; echo \"Session started: $(date +'%B') ${day}${s}, $(date +'%Y') $(date +'%I:%M %p')\"; echo $(date +%s) > /tmp/session_start_time"
+          },
+          {
+            "type": "command",
+            "command": "bash /media/cade/E/agents/start_agents.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "day=$(date +%-d); case $day in 1|21|31) s=st;; 2|22) s=nd;; 3|23) s=rd;; *) s=th;; esac; echo \"Current date/time: $(date +'%B') ${day}${s}, $(date +'%Y') $(date +'%I:%M %p')\""
+          },
+          {
+            "type": "command",
+            "command": "python3 /media/cade/E/agents/hooks/user_prompt_hook.py"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pkill -f 'agents/alert/alert.py' 2>/dev/null; pkill -f 'agents/blackout/blackout.py' 2>/dev/null; pkill -f 'agents/browser/browser.py' 2>/dev/null; pkill -f 'COMPASS/compass.py' 2>/dev/null; true"
+          },
+          {
+            "type": "command",
+            "command": "git -C /media/cade/E add -A && git -C /media/cade/E commit -m 'Session end auto-commit' --allow-empty && git -C /media/cade/E push"
+          }
+        ]
+      }
+    ]
+  }
+}

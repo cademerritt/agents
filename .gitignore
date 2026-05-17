@@ -1,0 +1,14 @@
+.credentials.json
+cache/
+history.jsonl
+file-history/
+backups/
+session-env/
+shell-snapshots/
+mcp-needs-auth-cache.json
+sessions/
+ide/
+plugins
+projects/-home-cade/*/subagents/
+projects/-home-cade/*/tool-results/
+projects/-home-cade/*.jsonl
