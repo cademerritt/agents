@@ -5,30 +5,17 @@ type: project
 originSessionId: dc4a23b4-fe27-47e7-bc00-221eb97dff97
 ---
 Critical file organization issue needs to be resolved before next session.
-
 **Drive layout:**
-- C drive / main Linux OS = nvme0n1p4 (1.8TB ext4, mounted at /)
-- E drive = nvme0n1p2 (2.2GB FAT32, mounted at /media/cade/E) — this is tiny, NOT the full 2TB SSD. Linux lives on E drive.
-- F drive = sda1 (19TB NTFS, mounted at /media/cade/F) — large storage HDD
-- nvme1n1 = 1.8TB NTFS (Windows drive, not mounted in Linux)
+1. nvme0n1 — 1.8TB — C drive (Windows SSD, not mounted in Linux) — p1: 100MB vfat Windows EFI — p2: 16MB Microsoft Reserved — p3: 1.8TB NTFS "MAIN" Windows OS — p4: 842MB NTFS Windows Recovery
+2. nvme1n1 — 1.8TB — E drive — p1: 1GB vfat /boot/efi — p2: 1.8TB ext4 Linux root
+3. sda1 — 18.2TB ext4 — F drive — /media/cade/F
 
-**Current mess:**
-- Python scripts in ~/PyProjects (main drive)
-- venv in ~/venv (main drive, 10GB+)
-- Ollama models pointed at /media/cade/E/ollama (2.2GB FAT32 — will fill up fast)
-- Piper voice models in /media/cade/E/piper-voices
+**To-Do / Plan for next session:**
+1. Make file watchers less compute-hungry (replace polling timers with inotify)
+2. Rebuild CLAUDE.md
+3. Rebuild start_agents.sh
 
-**Problems caused:**
-- Files scattered across drives caused Claude browser to behave erratically
-- Claude Code was also affected until fixed today
-- FAT32 on E drive doesn't support Linux file permissions (chown fails)
-- Ollama service had permission errors because of FAT32
-
-**Plan for next session:**
-- Decide proper home for: venv, models, scripts, data
-- F drive (19TB NTFS) is best for large model files
-- Need to verify where Ollama models actually landed (may have failed due to FAT32 issues)
-- Reorganize before adding more components to the assistant
-
-**Why:** File scatter is causing instability across all Claude interfaces. Need a clean, intentional layout before building further.
-**How to apply:** Before installing anything new, confirm target drive and check permissions support first.
+**Plans for the future:**
+1. Install second GPU in large PCIe slot when ready
+2. Set up dedicated 2TB SSD for Ollama/AI models when ready
+3. Restore Piper voice models from F drive backup to F drive (not E)
