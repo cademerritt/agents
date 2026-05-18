@@ -5,7 +5,8 @@ import re
 from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QTimer, Qt, QUrl
+from datetime import datetime
+from PyQt6.QtCore import QTimer, Qt, QUrl, QFileSystemWatcher
 
 SCREENS = {
     1: (0,    0,   1920, 1080),
@@ -115,21 +116,19 @@ class BrowserWindow(QMainWindow):
         self.show()
         self.setGeometry(x, y, w, h)
 
-        # wmctrl move after window manager settles
+        # force window to correct screen coordinates after window manager settles
         QTimer.singleShot(800, lambda t=title, px=x, py=y, pw=w, ph=h: os.system(
-            f'DISPLAY=:0 wmctrl -ir $(DISPLAY=:0 wmctrl -l | grep "{t}" | awk \'{{print $1}}\') '
-            f'-e 0,{px},{py},{pw},{ph}'
+            f'DISPLAY=:0 xdotool search --name "{t}" windowmove %1 {px} {py} windowsize %1 {pw} {ph}'
         ))
 
-        self._content_mtime = self.content_path.stat().st_mtime if self.content_path and self.content_path.exists() else None
+        self.fs_watcher = QFileSystemWatcher()
+        if self.content_path and self.content_path.exists():
+            self.fs_watcher.addPath(str(self.content_path))
+        self.fs_watcher.fileChanged.connect(self.on_file_changed)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.check_reminder)
         self.timer.start(3000)
-
-        self.watcher = QTimer()
-        self.watcher.timeout.connect(self.check_file_changed)
-        self.watcher.start(2000)
 
     def load_default(self):
         if self.content_path and self.content_path.exists():
@@ -140,13 +139,16 @@ class BrowserWindow(QMainWindow):
         else:
             self.view.load(QUrl.fromLocalFile(str(WALLPAPER)))
 
-    def check_file_changed(self):
-        if not self.content_path or not self.content_path.exists() or self.reminder_active:
+    def on_file_changed(self, path):
+        if self.reminder_active or not self.content_path or not self.content_path.exists():
             return
-        mtime = self.content_path.stat().st_mtime
-        if mtime != self._content_mtime:
-            self._content_mtime = mtime
-            self.load_default()
+        self.fs_watcher.addPath(str(self.content_path))
+        history_dir = Path("/media/cade/F/file-history")
+        if history_dir.exists():
+            ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            dest = history_dir / f"{self.content_path.stem}_{ts}{self.content_path.suffix}"
+            dest.write_bytes(self.content_path.read_bytes())
+        self.load_default()
 
     def check_reminder(self):
         exists = REMINDER_FILE.exists()
