@@ -14,6 +14,7 @@ Critical file organization issue needs to be resolved before next session.
 1. Make file watchers less compute-hungry (replace polling timers with inotify)
 2. Rebuild CLAUDE.md
 3. Rebuild start_agents.sh
+4. Build multi-LLM conversation agent (route questions to Gemini/ChatGPT/Claude simultaneously for consensus diagnosis)
 
 **Plans for the future:**
 1. Install second GPU in large PCIe slot when ready
