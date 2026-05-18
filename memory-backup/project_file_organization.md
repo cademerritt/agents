@@ -16,8 +16,14 @@ Critical file organization issue needs to be resolved before next session.
 3. Rebuild start_agents.sh
 4. Build multi-LLM conversation agent (route questions to Gemini/ChatGPT/Claude simultaneously for consensus diagnosis)
 5. Review MEMORY.md structure — decide whether session files belong in MEMORY.md index or should be consolidated into project_file_organization.md
+6. After second GPU install: verify system recognizes it and all programs run normally
+7. Reassign F6 (mic), F7 (send screenshot), F8 (take screenshot) from function keys to numpad keys — numpad arrives from B&H today
+8. Rewrite permission rule (feedback_permission_rule.md) — explicit command = permission for that action only
+9. Define catchphrase/explicit-command system — specific known command phrases (e.g. "t the latest screenshot") are self-authorizing; no separate permission ask needed
+10. Assign end chat to a numpad key — key triggers mic on; say "end chat" to confirm and proceed, say "no" to cancel
 
 **Plans for the future:**
-1. Install second GPU in large PCIe slot when ready
+1. Install second GPU in large PCIe slot when ready — DOING TODAY
 2. Set up dedicated 2TB SSD for Ollama/AI models when ready
 3. Restore Piper voice models from F drive backup to F drive (not E)
+4. Third GPU external housing — mini-ITX case + PCIe riser cable approach (deferred)

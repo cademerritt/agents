@@ -10,3 +10,4 @@
 - [Session May 17 2026 AM](session-05-17-2026-1206.md) — SessionStart hook wired with settings snapshot check; screenshot agent added to to-do list; to-do list reviewed
 - [Session May 17 2026 PM](session-05-17-2026-1907.md) — Browser fixed (wallpaper, word wrap, file watcher, numbered lists); drive layout corrected; memory cleanup; GitHub token refreshed
 - [Session May 18 2026 AM](session-05-18-2026-0842.md) — Short session; permission rule clarification proposed (same command twice = one permission); no files changed
+- [Session May 18 2026 AM2](session-05-18-2026-1105.md) — Audio troubleshooting, no sound card needed, numpad purchased (B&H), GPU install planned, end-chat key and catchphrase system designed
