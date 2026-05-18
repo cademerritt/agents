@@ -35,7 +35,7 @@ def main():
         if not pressed or done[0]:
             return
         if button == mouse.Button.left and stage[0] == 'click':
-            stage[0] = 'f7'
+            stage[0] = 'kp7'
         else:
             done[0] = True
             return False
@@ -43,7 +43,7 @@ def main():
     def on_key(key):
         if done[0]:
             return False
-        if stage[0] == 'f7' and key == keyboard.Key.f7:
+        if stage[0] == 'kp7' and key == keyboard.KeyCode.from_vk(0xffb7):
             path = get_latest_screenshot()
             if path:
                 send_to_claude(path)
