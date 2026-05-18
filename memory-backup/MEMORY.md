@@ -9,3 +9,4 @@
 - [Session May 16 2026](session-05-16-2026-2030.md) — Post-reformat recovery: full diagnostic, all files restored from F-WORM, git/venv/inotify fixed, Steam reinstalling
 - [Session May 17 2026 AM](session-05-17-2026-1206.md) — SessionStart hook wired with settings snapshot check; screenshot agent added to to-do list; to-do list reviewed
 - [Session May 17 2026 PM](session-05-17-2026-1907.md) — Browser fixed (wallpaper, word wrap, file watcher, numbered lists); drive layout corrected; memory cleanup; GitHub token refreshed
+- [Session May 18 2026 AM](session-05-18-2026-0842.md) — Short session; permission rule clarification proposed (same command twice = one permission); no files changed
