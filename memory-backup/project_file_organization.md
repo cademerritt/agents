@@ -11,14 +11,13 @@ Critical file organization issue needs to be resolved before next session.
 3. sda1 — 18.2TB ext4 — F drive — /media/cade/F
 
 **To-Do / Plan for next session:**
-1. [TOP PRIORITY] Build sensor agent — monitors CPU, GPU, and motherboard temps continuously; alerts when temps are high; runs as background daemon; reports to Claude on demand
-2. Make file watchers less compute-hungry (replace polling timers with inotify)
-2. Rebuild CLAUDE.md
-3. Rebuild start_agents.sh
-4. Build multi-LLM conversation agent (route questions to Gemini/ChatGPT/Claude simultaneously for consensus diagnosis)
-5. Review MEMORY.md structure — decide whether session files belong in MEMORY.md index or should be consolidated into project_file_organization.md
-6. After second GPU install: verify system recognizes it and all programs run normally
-7. [DONE] Reassigned mic→KP_6, send screenshot→KP_7, take screenshot→KP_8 — test fully after GPU install
+1. [FIRST TOMORROW] LLM consensus on browser.py rewrite — get opinions from Gemini, ChatGPT, Perplexity
+2. [TOP PRIORITY] Build sensor agent — monitors CPU, GPU, and motherboard temps continuously; alerts when temps are high; runs as background daemon; reports to Claude on demand
+3. Rebuild CLAUDE.md
+4. Rebuild start_agents.sh
+5. Build multi-LLM conversation agent (route questions to Gemini/ChatGPT/Claude simultaneously for consensus diagnosis)
+6. Review MEMORY.md structure — decide whether session files belong in MEMORY.md index or should be consolidated into project_file_organization.md
+7. After second GPU install: verify system recognizes it and all programs run normally
 8. Rewrite permission rule (feedback_permission_rule.md) — explicit command = permission for that action only
 9. Define catchphrase/explicit-command system — specific known command phrases (e.g. "t the latest screenshot") are self-authorizing; no separate permission ask needed
 10. Assign end chat to a numpad key — key triggers mic on; say "end chat" to confirm and proceed, say "no" to cancel

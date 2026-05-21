@@ -11,3 +11,5 @@
 - [Session May 17 2026 PM](session-05-17-2026-1907.md) — Browser fixed (wallpaper, word wrap, file watcher, numbered lists); drive layout corrected; memory cleanup; GitHub token refreshed
 - [Session May 18 2026 AM](session-05-18-2026-0842.md) — Short session; permission rule clarification proposed (same command twice = one permission); no files changed
 - [Session May 18 2026 AM2](session-05-18-2026-1105.md) — Audio troubleshooting, no sound card needed, numpad purchased (B&H), GPU install planned, end-chat key and catchphrase system designed
+- [LLM Consensus Scores](../../../agents/llm-consensus.md) — Running grade sheet for ChatGPT/Gemini/Perplexity/Claude by task category; informs agent design
+- [Session May 20 2026 PM](session-05-20-2026-2052.md) — Browser rewrite: BrowserController split, sequential IDs, multi-window, crash recovery; consensus scheduled for tomorrow
