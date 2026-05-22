@@ -1,9 +1,11 @@
 # Memory Index
 
 - [Permission Rule](feedback_permission_rule.md) — Never write/edit/create files or take system actions without explicit per-action permission; each "yes" covers one action only
+- [System Hardware](system_architecture/reference_system_hardware.md) — Drives (C/E/F layout), GPU, monitors, dual-boot
+- [System Software](system_architecture/reference_system_software.md) — OS, Python versions, venv, key paths, packages list pointer, GitHub
 - [System Rebuild Reference](reference_packages_drivers.md) — Full package/driver list at /media/cade/F/system-settings/packages-and-drivers.txt (Nvidia driver, apt packages, pip packages)
 
-- [File organization + Session Plan + To-Do](project_file_organization.md) — Drive layout reference (C/E/F), session to-do list, and plan for next session all live here
+- [Session To-Do List](project_file_organization.md) — Active to-do list and plans for upcoming sessions
 - [Terracian — Prototype 1](project_terracian.md) — Red dagger extracted from dagger.png, displayed on screen 3 browser; prototype 1 saved at /media/cade/E/agents/browser/prototypes/
 - [Session May 15 2026](session-05-15-2026-2248.md) — Hookify audit, F-WORM backup hook built, E drive reformat planned for tomorrow morning
 - [Session May 16 2026](session-05-16-2026-2030.md) — Post-reformat recovery: full diagnostic, all files restored from F-WORM, git/venv/inotify fixed, Steam reinstalling
@@ -13,3 +15,4 @@
 - [Session May 18 2026 AM2](session-05-18-2026-1105.md) — Audio troubleshooting, no sound card needed, numpad purchased (B&H), GPU install planned, end-chat key and catchphrase system designed
 - [LLM Consensus Scores](../../../agents/llm-consensus.md) — Running grade sheet for ChatGPT/Gemini/Perplexity/Claude by task category; informs agent design
 - [Session May 20 2026 PM](session-05-20-2026-2052.md) — Browser rewrite: BrowserController split, sequential IDs, multi-window, crash recovery; consensus scheduled for tomorrow
+- [Session May 21 2026 PM](session-05-21-2026-2051.md) — system_architecture/ folder, MASTER.md startup chain, CLAUDE.md restructure, browser Copy/Clear All + editable paste area, CADE-PROFILE rebuilt

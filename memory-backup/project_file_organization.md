@@ -1,15 +1,9 @@
 ---
-name: File organization problem
-description: Cade's machine has files scattered across drives causing instability with Claude browser and Claude Code
+name: Session To-Do List
+description: Active to-do list and plans for upcoming sessions
 type: project
-originSessionId: dc4a23b4-fe27-47e7-bc00-221eb97dff97
+originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 ---
-Critical file organization issue needs to be resolved before next session.
-**Drive layout:**
-1. nvme0n1 — 1.8TB — C drive (Windows SSD, not mounted in Linux) — p1: 100MB vfat Windows EFI — p2: 16MB Microsoft Reserved — p3: 1.8TB NTFS "MAIN" Windows OS — p4: 842MB NTFS Windows Recovery
-2. nvme1n1 — 1.8TB — E drive — p1: 1GB vfat /boot/efi — p2: 1.8TB ext4 Linux root
-3. sda1 — 18.2TB ext4 — F drive — /media/cade/F
-
 **To-Do / Plan for next session:**
 1. [FIRST TOMORROW] LLM consensus on browser.py rewrite — get opinions from Gemini, ChatGPT, Perplexity
 2. [TOP PRIORITY] Build sensor agent — monitors CPU, GPU, and motherboard temps continuously; alerts when temps are high; runs as background daemon; reports to Claude on demand
