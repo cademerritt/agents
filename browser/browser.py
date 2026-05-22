@@ -7,7 +7,7 @@ import socket
 import argparse
 from pathlib import Path
 from datetime import datetime
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QToolBar, QPushButton
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtNetwork import QLocalServer
 from PyQt6.QtCore import Qt, QUrl, QFileSystemWatcher, QTimer
@@ -48,6 +48,24 @@ CONTENT_TEMPLATE = """<!DOCTYPE html>
   hr {{ border:none; border-top:1px solid #333; margin:20px 0; }}
 </style></head>
 <body>{content}</body></html>"""
+
+
+EDIT_TEMPLATE = """<!DOCTYPE html>
+<html><head><style>
+  * { box-sizing: border-box; }
+  body { background:#1a1a1a; color:#e0e0e0; font-family:monospace;
+         padding:32px; margin:0; line-height:1.7; font-size:15px;
+         word-wrap:break-word; overflow-wrap:break-word; }
+  #placeholder { color:#444; position:absolute; top:32px; left:32px;
+                 pointer-events:none; user-select:none; }
+  #editor { outline:none; min-height:calc(100vh - 64px); white-space:pre-wrap; }
+</style></head>
+<body>
+  <div id="placeholder">Paste here...</div>
+  <div id="editor" contenteditable="true"
+       oninput="document.getElementById('placeholder').style.display=this.innerText.trim()?'none':'block'">
+  </div>
+</body></html>"""
 
 
 def md_to_html(text):
@@ -103,6 +121,17 @@ class BrowserWindow(QMainWindow):
         geo = screens[idx].geometry()
         self.setGeometry(geo)
 
+        toolbar = QToolBar()
+        toolbar.setMovable(False)
+        btn = QPushButton("Copy All")
+        btn.clicked.connect(self._copy_all)
+        toolbar.addWidget(btn)
+
+        btn_clear = QPushButton("Clear All")
+        btn_clear.clicked.connect(self._clear_all)
+        toolbar.addWidget(btn_clear)
+        self.addToolBar(Qt.ToolBarArea.TopToolBarArea, toolbar)
+
         self.view = QWebEngineView()
         self.setCentralWidget(self.view)
         self.show()
@@ -116,6 +145,12 @@ class BrowserWindow(QMainWindow):
 
     def render_url(self, url):
         self.view.load(url)
+
+    def _copy_all(self):
+        self.view.page().toPlainText(lambda text: QApplication.clipboard().setText(text))
+
+    def _clear_all(self):
+        self.view.setHtml(EDIT_TEMPLATE)
 
     def closeEvent(self, event):
         self._on_close()
@@ -170,7 +205,7 @@ class BrowserController:
         elif WALLPAPER.exists():
             self.window.render_url(QUrl.fromLocalFile(str(WALLPAPER)))
         else:
-            self.window.render_html(CONTENT_TEMPLATE.format(content="<h1>Ready</h1>"))
+            self.window.render_html(EDIT_TEMPLATE)
 
     def _on_file_changed(self, path):
         if self.reminder_active or not self.content_path or not self.content_path.exists():
