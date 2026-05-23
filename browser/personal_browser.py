@@ -130,6 +130,10 @@ class BrowserWindow(QMainWindow):
         btn_clear = QPushButton("Clear All")
         btn_clear.clicked.connect(self._clear_all)
         toolbar.addWidget(btn_clear)
+
+        btn_read = QPushButton("Read")
+        btn_read.clicked.connect(self._read_aloud)
+        toolbar.addWidget(btn_read)
         self.addToolBar(Qt.ToolBarArea.TopToolBarArea, toolbar)
 
         self.view = QWebEngineView()
@@ -151,6 +155,9 @@ class BrowserWindow(QMainWindow):
 
     def _clear_all(self):
         self.view.setHtml(EDIT_TEMPLATE)
+
+    def _read_aloud(self):
+        pass  # Not yet implemented
 
     def closeEvent(self, event):
         self._on_close()

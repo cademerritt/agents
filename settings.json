@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pkill -f 'agents/alert/alert.py' 2>/dev/null; pkill -f 'agents/blackout/blackout.py' 2>/dev/null; pkill -f 'agents/browser/browser.py' 2>/dev/null; pkill -f 'COMPASS/compass.py' 2>/dev/null; true"
+            "command": "pkill -f 'agents/alert/alert.py' 2>/dev/null; pkill -f 'agents/blackout/blackout.py' 2>/dev/null; pkill -f 'agents/browser/personal_browser.py' 2>/dev/null; pkill -f 'COMPASS/compass.py' 2>/dev/null; true"
           },
           {
             "type": "command",
