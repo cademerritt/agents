@@ -223,7 +223,7 @@ class BrowserController:
     def _do_reload(self):
         if not self.content_path or not self.content_path.exists():
             return
-        history_dir = Path("/media/cade/F/file-history")
+        history_dir = Path("/media/cade/ImmutableDrive/file-history")
         if history_dir.exists():
             try:
                 ts   = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

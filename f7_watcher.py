@@ -4,7 +4,7 @@ from pathlib import Path
 from pynput import keyboard, mouse
 from datetime import datetime
 
-SAVE_DIR = Path("/media/cade/F/screenshots")
+SAVE_DIR = Path("/media/cade/ImmutableDrive/screenshots")
 LOG = Path("/tmp/f7_watcher.log")
 
 def log(msg):

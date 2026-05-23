@@ -9,8 +9,8 @@ from datetime import datetime
 from pathlib import Path
 import time
 
-SAVE_DIR = Path("/media/cade/F/screenshots")
-F_DRIVE = Path("/media/cade/F")
+SAVE_DIR = Path("/media/cade/ImmutableDrive/screenshots")
+F_DRIVE = Path("/media/cade/ImmutableDrive")
 
 
 def f_drive_mounted():

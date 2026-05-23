@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 
-DEST_BASE = Path("/media/cade/F/backups")
+DEST_BASE = Path("/media/cade/ImmutableDrive/backups")
 SESSION_START_FILE = Path("/tmp/session_start_time")
 
 WATCH_DIRS = [

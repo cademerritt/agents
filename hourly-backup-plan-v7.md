@@ -12,7 +12,7 @@
 - Scan root: `/` (entire filesystem)
 - Does not cross filesystem boundaries (device ID check — stays on root partition only)
 - Permission errors skipped gracefully — scan keeps going
-- Exclusions: /proc, /sys, /dev, /run, /tmp, /media/cade/F
+- Exclusions: /proc, /sys, /dev, /run, /tmp, /media/cade/ImmutableDrive
 - Also exclude: .cache, venv, .venv, node_modules, __pycache__, .git, .nv, browser cache
 
 ## How Files Are Copied
@@ -42,5 +42,5 @@
 - Existing CLAUDE.md every-5-messages injection preserved
 
 ## Storage
-- `/media/cade/F/backups/YYYY-MM-DD_HH-00/`
+- `/media/cade/ImmutableDrive/backups/YYYY-MM-DD_HH-00/`
 - Timestamp: `/home/cade/.last_backup_time`

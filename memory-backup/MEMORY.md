@@ -4,7 +4,7 @@
 - [Global Renames Log](reference_renames.md) — All file/script renames with date and every file updated; check here when something breaks after a rename
 - [System Hardware](system_architecture/reference_system_hardware.md) — Drives (C/E/F layout), GPU, monitors, dual-boot
 - [System Software](system_architecture/reference_system_software.md) — OS, Python versions, venv, key paths, packages list pointer, GitHub
-- [System Rebuild Reference](reference_packages_drivers.md) — Full package/driver list at /media/cade/F/system-settings/packages-and-drivers.txt (Nvidia driver, apt packages, pip packages)
+- [System Rebuild Reference](reference_packages_drivers.md) — Full package/driver list at /media/cade/ImmutableDrive/system-settings/packages-and-drivers.txt (Nvidia driver, apt packages, pip packages)
 
 - [To-Do List](project_file_organization.md) — To-do list and future plans only — not commands
 - [Terracian — Prototype 1](project_terracian.md) — Red dagger extracted from dagger.png, displayed on screen 3 browser; prototype 1 saved at /media/cade/E/agents/browser/prototypes/

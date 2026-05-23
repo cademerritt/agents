@@ -16,7 +16,7 @@ originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
    - p1: 1GB vfat — /boot/efi
    - p2: 1.8TB ext4 — Linux root (/)
 
-3. **sda1** — 18.2TB ext4 — F drive — mounted at /media/cade/F
+3. **sda1** — 18.2TB ext4 — F drive — mounted at /media/cade/ImmutableDrive
    - Used for: file history, snapshots, backups, system settings, AI models (future)
 
 ## GPU

@@ -2,7 +2,7 @@
 import subprocess
 from pathlib import Path
 
-SAVE_DIR = Path("/media/cade/F/screenshots")
+SAVE_DIR = Path("/media/cade/ImmutableDrive/screenshots")
 
 
 def get_latest_screenshot():

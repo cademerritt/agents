@@ -5,7 +5,7 @@ type: reference
 originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 ---
 Full system rebuild package list is at:
-**/media/cade/F/system-settings/packages-and-drivers.txt**
+**/media/cade/ImmutableDrive/system-settings/packages-and-drivers.txt**
 
 Contains three sections:
 1. Nvidia driver version

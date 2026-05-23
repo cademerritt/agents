@@ -26,13 +26,13 @@ originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 
 - Agents: `/home/cade/agents/` — browser, hotkey_daemon, screenshot_agent
 - Claude Code: Anti-Gravity IDE on screen 1
-- F drive settings: `/media/cade/F/system-settings/`
-- File history: `/media/cade/F/file-history/`
-- Snapshots: `/media/cade/F/snapshots/`
+- F drive settings: `/media/cade/ImmutableDrive/system-settings/`
+- File history: `/media/cade/ImmutableDrive/file-history/`
+- Snapshots: `/media/cade/ImmutableDrive/snapshots/`
 
 ## Full Package / Driver List
 
-See: `/media/cade/F/system-settings/packages-and-drivers.txt`
+See: `/media/cade/ImmutableDrive/system-settings/packages-and-drivers.txt`
 Includes: Nvidia driver, apt packages, pip packages
 
 ## GitHub
