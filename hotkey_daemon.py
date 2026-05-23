@@ -7,8 +7,8 @@ BINDING_MIC        = 'org.gnome.settings-daemon.plugins.media-keys.custom-keybin
 BINDING_SEND       = 'org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/'
 
 
-def is_antigravity_running():
-    result = subprocess.run(['pgrep', '-f', '/usr/share/antigravity/antigravity'],
+def is_vscode_running():
+    result = subprocess.run(['pgrep', '-f', '/usr/share/code/code'],
                             capture_output=True)
     return result.returncode == 0
 
@@ -30,7 +30,7 @@ def disable_hotkeys():
 def main():
     was_running = None
     while True:
-        is_running = is_antigravity_running()
+        is_running = is_vscode_running()
         if is_running and not was_running:
             enable_hotkeys()
         elif not is_running and was_running:

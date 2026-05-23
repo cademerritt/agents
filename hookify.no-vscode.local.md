@@ -6,4 +6,4 @@ pattern: VS Code|VSCode|vscode
 action: block
 ---
 
-WARNING: Cade uses Anti-Gravity, not VS Code. Do not reference VS Code.
+WARNING: Cade uses VS Code, not VS Code. Do not reference VS Code.

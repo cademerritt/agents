@@ -18,14 +18,14 @@ originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 ## Daily Software Setup
 
 - **Claude Pro** — subscription tier
-- **Anti-Gravity IDE** — screen 1, runs Claude Code
+- **VSCode** — screen 1, runs Claude Code
 - **Terminal** — screen 2
 - **Chrome** — screen 3 (email, GitHub, Claude web)
 
 ## Key Paths
 
 - Agents: `/home/cade/agents/` — browser, hotkey_daemon, screenshot_agent
-- Claude Code: Anti-Gravity IDE on screen 1
+- Claude Code: VSCode on screen 1
 - F drive settings: `/media/cade/ImmutableDrive/system-settings/`
 - File history: `/media/cade/ImmutableDrive/file-history/`
 - Snapshots: `/media/cade/ImmutableDrive/snapshots/`

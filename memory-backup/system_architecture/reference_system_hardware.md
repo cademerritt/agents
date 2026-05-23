@@ -28,7 +28,7 @@ originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 ## Monitors
 
 - 3 monitors
-- Screen 1: Claude Code (Anti-Gravity IDE)
+- Screen 1: Claude Code (VSCode)
 - Screen 2: Terminal
 - Screen 3: Chrome (email, GitHub, Claude)
 

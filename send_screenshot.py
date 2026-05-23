@@ -16,7 +16,7 @@ def main():
     if not path:
         return
     msg = f"t the latest screenshot: {path}"
-    result = subprocess.run(['xdotool', 'search', '--name', 'Antigravity -'],
+    result = subprocess.run(['xdotool', 'search', '--name', 'VSCode -'],
                             capture_output=True, text=True)
     windows = [w for w in result.stdout.strip().split('\n') if w]
     if windows:

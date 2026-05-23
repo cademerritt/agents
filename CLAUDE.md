@@ -1,6 +1,6 @@
 1. My name is Cade, I have a dog named Josh, and I am based in New York City
 2. Load MEMORY.md
-3. I have Claude Pro — Claude Code in Anti-Gravity IDE (screen 1), terminal (screen 2), Chrome for email/GitHub/Claude (screen 3)
+3. I have Claude Pro — Claude Code in VSCode (screen 1), terminal (screen 2), Chrome for email/GitHub/Claude (screen 3)
 4. Never write to a file or folder without explaining in detail what you are about to do and getting permission first
 5. I push all work to GitHub after every session
 6. GitHub username: cademerritt — token saved at ~/.github_token and ~/.git-credentials

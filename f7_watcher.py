@@ -20,7 +20,7 @@ def get_latest_screenshot():
 
 def send_to_claude(path):
     msg = f"Look at the latest screenshot: {path}"
-    result = subprocess.run(['xdotool', 'search', '--name', 'Antigravity -'],
+    result = subprocess.run(['xdotool', 'search', '--name', 'VSCode -'],
                             capture_output=True, text=True)
     windows = [w for w in result.stdout.strip().split('\n') if w]
     if windows:

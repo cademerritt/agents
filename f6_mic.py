@@ -5,15 +5,15 @@ from pathlib import Path
 FLAG = Path("/tmp/mic_active")
 
 
-def get_antigravity_wid():
-    result = subprocess.run(['xdotool', 'search', '--name', 'Antigravity -'],
+def get_vscode_wid():
+    result = subprocess.run(['xdotool', 'search', '--class', 'Code'],
                             capture_output=True, text=True)
     windows = [w for w in result.stdout.strip().split('\n') if w]
     return windows[0] if windows else None
 
 
 def main():
-    wid = get_antigravity_wid()
+    wid = get_vscode_wid()
 
     if FLAG.exists():
         FLAG.unlink()

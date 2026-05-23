@@ -5,7 +5,7 @@ type: project
 originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 ---
 **Mid-Session State (May 22 2026 ~7:52 PM — RESUME HERE):**
-- Screen 1: Anti-Gravity IDE with Claude Code
+- Screen 1: VSCode with Claude Code
 - Screen 2: Browser showing Hourly Backup Plan v7 — file saved at `/home/cade/agents/hourly-backup-plan-v7.md`
 - Screen 3: Chrome
 - In progress: LLM consensus on hourly backup agent — ChatGPT agreed with v7, Perplexity agreed, Gemini not yet reviewed v7
