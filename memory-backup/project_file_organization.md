@@ -12,16 +12,6 @@ originSessionId: c1b4fc12-8eb4-43d8-aa1a-fe26c1bdfc7a
 - Next step: Send v7 to Gemini, get consensus, then write the code
 - Sudoers rule still needed: `cade ALL=(ALL) NOPASSWD: /usr/bin/chattr`
 
-**Bugs:**
-1. ~~KP7 not working~~ — rewritten this session
-2. ~~KP6 buggy~~ — rewritten as mic_switch.py this session
-3. F drive not renaming (sudo e2label /dev/sda1 ImmutableDrive — requires terminal password)
-
-**screenshot_agent.py improvements (from Perplexity/Gemini consensus — defer to next session):**
-1. Add log file — silent pass on exceptions hides failures
-2. Add 30-second timeout on WAITING_CONFIRM state — prevents stalling if KP7/KP9 never pressed
-3. Use sys.executable instead of python3 for animation subprocess
-
 **To-Do / Plan for next session:**
 1. [FIRST TOMORROW] LLM consensus on browser.py rewrite — get opinions from Gemini, ChatGPT, Perplexity
 2. [TOP PRIORITY] Build sensor agent — monitors CPU, GPU, and motherboard temps continuously; alerts when temps are high; runs as background daemon; reports to Claude on demand

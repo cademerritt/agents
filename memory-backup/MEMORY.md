@@ -5,6 +5,7 @@
 - [System Hardware](system_architecture/reference_system_hardware.md) — Drives (C/E/F layout), GPU, monitors, dual-boot
 - [System Software](system_architecture/reference_system_software.md) — OS, Python versions, venv, key paths, packages list pointer, GitHub
 - [System Rebuild Reference](reference_packages_drivers.md) — Full package/driver list at /media/cade/ImmutableDrive/system-settings/packages-and-drivers.txt (Nvidia driver, apt packages, pip packages)
+- [Agent Logs](reference_agent_logs.md) — Log file locations for all agents; check here when debugging agent failures
 
 - [To-Do List](project_file_organization.md) — To-do list and future plans only — not commands
 - [Terracian — Prototype 1](project_terracian.md) — Red dagger extracted from dagger.png, displayed on screen 3 browser; prototype 1 saved at /media/cade/E/agents/browser/prototypes/
@@ -19,4 +20,5 @@
 - [Session May 21 2026 PM](session-05-21-2026-2051.md) — system_architecture/ folder, MASTER.md startup chain, CLAUDE.md restructure, browser Copy/Clear All + editable paste area, CADE-PROFILE rebuilt
 - [Session May 22 2026 PM](session-05-22-2026-1954.md) — F drive immutability audit, hourly backup agent plan v7 (ChatGPT+Perplexity agreed, Gemini pending), consensus agent added to to-do
 - [Session May 23 2026 AM](session-05-23-2026-0747.md) — Backup plan v7→v10, permission rule fixed, F-WORM→Immutable Drive, bugs list, concern 4 open (immutability/sudo)
+- [Session May 24 2026 PM](session-05-24-2026-1736.md) — Browser rewritten PyQt6→tkinter, CLAUDE.md renumbered 1-11, screenshot_agent logging added, to-do list cleaned up
 - [Tuesday Programming Sessions](project_tuesday_programming.md) — Cade reviews programming concepts every Tuesday; always explain code in plain English
