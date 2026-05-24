@@ -176,7 +176,7 @@ class BrowserController:
 
         self.window = BrowserWindow(screen_num, self._on_window_closed)
         self.window.set_title(
-            self.content_path.name if self.content_path else f"Browser {browser_id}"
+            str(self.content_path) if self.content_path else f"Browser {browser_id}"
         )
 
         self._reload_timer = QTimer()
