@@ -6,7 +6,7 @@ import difflib
 from pathlib import Path
 from datetime import datetime
 
-SNAPSHOTS_DIR = Path("/media/cade/ImmutableDrive/system-settings")
+SNAPSHOTS_DIR = Path("/home/cade/agents/snapshots")
 MAX_SNAPSHOTS = 5
 
 SYSTEM_FILES = [
