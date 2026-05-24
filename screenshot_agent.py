@@ -1,29 +1,42 @@
 #!/usr/bin/env python3
+import logging
 import os
 import re
 import socket
 import subprocess
+import sys
 import threading
 import time
 from pathlib import Path
 from datetime import datetime
 from pynput import mouse
 
-SAVE_DIR = Path("/media/cade/ImmutableDrive/screenshots")
+SAVE_DIR    = Path("/media/cade/ImmutableDrive/screenshots")
 ANIM_SCRIPT = Path(__file__).parent / "screenshot_anim.py"
-SOCK_PATH = "/tmp/screenshot_agent.sock"
+SOCK_PATH   = "/tmp/screenshot_agent.sock"
+LOG_PATH    = Path(__file__).parent / "logs/screenshot_agent.log"
 
-IDLE = 0
-WAITING_CLICK = 1
+IDLE            = 0
+WAITING_CLICK   = 1
 WAITING_CONFIRM = 2
+
+LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(
+    filename=str(LOG_PATH),
+    level=logging.DEBUG,
+    format="%(asctime)s %(levelname)s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+log = logging.getLogger("screenshot_agent")
 
 
 class ScreenshotAgent:
     def __init__(self):
-        self.state = IDLE
+        self.state       = IDLE
         self.latest_path = None
-        self.anim_proc = None
-        self.lock = threading.Lock()
+        self.anim_proc   = None
+        self.lock        = threading.Lock()
+        log.info("ScreenshotAgent started")
 
     def get_monitor_for_point(self, x, y):
         try:
@@ -36,15 +49,15 @@ class ScreenshotAgent:
                         if ox <= x < ox + w and oy <= y < oy + h:
                             return ox, oy, w, h
         except Exception:
-            pass
+            log.exception("get_monitor_for_point failed")
         return None
 
     def take_screenshot(self, x, y):
         try:
             SAVE_DIR.mkdir(parents=True, exist_ok=True)
-            ts = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+            ts   = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
             path = SAVE_DIR / f"Screenshot from {ts}.png"
-            geo = self.get_monitor_for_point(x, y)
+            geo  = self.get_monitor_for_point(x, y)
             if geo:
                 ox, oy, w, h = geo
                 cmd = ["scrot", "-a", f"{ox},{oy},{w},{h}", str(path)]
@@ -52,21 +65,25 @@ class ScreenshotAgent:
                 cmd = ["scrot", str(path)]
             res = subprocess.run(cmd, capture_output=True, check=False)
             if res.returncode == 0 and path.exists():
+                log.info("Screenshot saved: %s", path)
                 return str(path)
+            else:
+                log.error("scrot failed (rc=%d): %s", res.returncode, res.stderr.decode())
         except Exception:
-            pass
+            log.exception("take_screenshot failed")
         return None
 
     def start_animation(self):
         self.stop_animation()
         try:
             self.anim_proc = subprocess.Popen(
-                ["python3", str(ANIM_SCRIPT)],
+                [sys.executable, str(ANIM_SCRIPT)],
                 env=os.environ.copy(),
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             )
         except Exception:
+            log.exception("start_animation failed")
             self.anim_proc = None
 
     def stop_animation(self):
@@ -78,7 +95,7 @@ class ScreenshotAgent:
                 try:
                     self.anim_proc.kill()
                 except Exception:
-                    pass
+                    log.exception("stop_animation kill failed")
         self.anim_proc = None
 
     def reset(self):
@@ -95,7 +112,7 @@ class ScreenshotAgent:
                 subprocess.run(["xdotool", "windowactivate", "--sync", wid], check=False)
                 time.sleep(0.15)
         except Exception:
-            pass
+            log.exception("focus_claude failed")
 
     def send_to_claude(self, path):
         msg = f"t the latest screenshot: {path}"
@@ -103,12 +120,14 @@ class ScreenshotAgent:
             self.focus_claude()
             subprocess.run(["xdotool", "type", "--clearmodifiers", "--delay", "0", msg], check=False)
             subprocess.run(["xdotool", "key", "Return"], check=False)
+            log.info("Sent to Claude: %s", path)
         except Exception:
-            pass
+            log.exception("send_to_claude failed")
 
     def paste_to_gemini(self, path):
         try:
             if not os.path.exists(path):
+                log.warning("paste_to_gemini: path not found: %s", path)
                 return
             with open(path, "rb") as f:
                 subprocess.run(["xclip", "-selection", "clipboard", "-t", "image/png"],
@@ -121,10 +140,11 @@ class ScreenshotAgent:
                     wid = windows[0]
                     subprocess.run(["xdotool", "windowfocus", wid], check=False)
                     subprocess.run(["xdotool", "key", "--window", wid, "ctrl+v"], check=False)
+                    log.info("Pasted to %s", name)
                     return
             subprocess.run(["xdotool", "key", "ctrl+v"], check=False)
         except Exception:
-            pass
+            log.exception("paste_to_gemini failed")
 
     def handle_kp8(self):
         with self.lock:
@@ -163,6 +183,7 @@ class ScreenshotAgent:
                     self.latest_path = path
                     self.state = WAITING_CONFIRM
                 else:
+                    log.error("Screenshot failed — resetting state")
                     self.reset()
             elif self.state != IDLE:
                 self.reset()
@@ -172,10 +193,11 @@ class ScreenshotAgent:
             try:
                 os.unlink(SOCK_PATH)
             except Exception:
-                pass
+                log.exception("Could not unlink socket")
         server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         server.bind(SOCK_PATH)
         server.listen(5)
+        log.info("Socket server listening at %s", SOCK_PATH)
         while True:
             try:
                 conn, _ = server.accept()
@@ -187,8 +209,10 @@ class ScreenshotAgent:
                     self.handle_kp7()
                 elif cmd == "kp9":
                     self.handle_kp9()
+                else:
+                    log.warning("Unknown command: %s", cmd)
             except Exception:
-                pass
+                log.exception("Socket server error")
 
     def run(self):
         t = threading.Thread(target=self.run_socket_server, daemon=True)
