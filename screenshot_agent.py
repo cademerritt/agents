@@ -94,8 +94,6 @@ class ScreenshotAgent:
                 wid = windows[-1]
                 subprocess.run(["xdotool", "windowactivate", "--sync", wid], check=False)
                 time.sleep(0.15)
-                subprocess.run(["xdotool", "key", "--clearmodifiers", "ctrl+Escape"], check=False)
-                time.sleep(0.15)
         except Exception:
             pass
 
@@ -103,7 +101,7 @@ class ScreenshotAgent:
         msg = f"t the latest screenshot: {path}"
         try:
             self.focus_claude()
-            subprocess.run(["xdotool", "type", "--clearmodifiers", msg], check=False)
+            subprocess.run(["xdotool", "type", "--clearmodifiers", "--delay", "0", msg], check=False)
             subprocess.run(["xdotool", "key", "Return"], check=False)
         except Exception:
             pass

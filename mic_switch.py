@@ -15,7 +15,7 @@ def focus_claude():
     if windows:
         wid = windows[-1]
         subprocess.run(["xdotool", "windowactivate", "--sync", wid])
-        time.sleep(0.15)
+        time.sleep(0.4)
 
 
 def send_key(key):
