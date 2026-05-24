@@ -3,8 +3,10 @@ import sys
 import json
 
 CLAUDE_MD_PATH = "/home/cade/CLAUDE.md"
+MEMORY_MD_PATH = "/home/cade/.claude/projects/-home-cade/memory/MEMORY.md"
 COUNTER_FILE = "/tmp/claude_msg_count"
 INJECT_EVERY = 5
+
 
 def get_count():
     try:
@@ -13,9 +15,11 @@ def get_count():
     except:
         return 0
 
+
 def set_count(n):
     with open(COUNTER_FILE, "w") as f:
         f.write(str(n))
+
 
 def load_file(path):
     try:
@@ -24,6 +28,7 @@ def load_file(path):
     except:
         return ""
 
+
 def main():
     data = json.load(sys.stdin)
     count = get_count() + 1
@@ -31,14 +36,20 @@ def main():
 
     if count % INJECT_EVERY == 0:
         claude_md = load_file(CLAUDE_MD_PATH)
+        memory_md = load_file(MEMORY_MD_PATH)
+
         reminder = ""
         if claude_md:
-            reminder += f"[CLAUDE.md REMINDER]\n{claude_md}\n[END REMINDER]\n\n"
+            reminder += f"CADE ORDERS: READ AND FOLLOW CLAUDE.md NOW. THIS IS NOT OPTIONAL.\n\n[CLAUDE.md]\n{claude_md}\n\n"
+        if memory_md:
+            reminder += f"CADE ORDERS: READ AND FOLLOW MEMORY.md NOW. THIS IS NOT OPTIONAL.\n\n[MEMORY.md]\n{memory_md}\n\n"
+
         if reminder:
             prompt = data.get("prompt", "")
             data["prompt"] = reminder + prompt
 
     print(json.dumps(data))
+
 
 if __name__ == "__main__":
     main()

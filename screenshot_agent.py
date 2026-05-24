@@ -1,171 +1,204 @@
 #!/usr/bin/env python3
-import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
-from gi.repository import Gtk, Gdk, GLib
-import cairo
-import math
-from datetime import datetime
-from pathlib import Path
+import os
+import re
+import socket
+import subprocess
+import threading
 import time
+from pathlib import Path
+from datetime import datetime
+from pynput import mouse
 
 SAVE_DIR = Path("/media/cade/ImmutableDrive/screenshots")
-F_DRIVE = Path("/media/cade/ImmutableDrive")
+ANIM_SCRIPT = Path(__file__).parent / "screenshot_anim.py"
+SOCK_PATH = "/tmp/screenshot_agent.sock"
+
+IDLE = 0
+WAITING_CLICK = 1
+WAITING_CONFIRM = 2
 
 
-def f_drive_mounted():
-    return F_DRIVE.is_mount()
+class ScreenshotAgent:
+    def __init__(self):
+        self.state = IDLE
+        self.latest_path = None
+        self.anim_proc = None
+        self.lock = threading.Lock()
+
+    def get_monitor_for_point(self, x, y):
+        try:
+            result = subprocess.run(["xrandr"], capture_output=True, text=True, check=True)
+            for line in result.stdout.splitlines():
+                if "connected" in line and "disconnected" not in line:
+                    m = re.search(r"(\d+)x(\d+)\+(\d+)\+(\d+)", line)
+                    if m:
+                        w, h, ox, oy = map(int, m.groups())
+                        if ox <= x < ox + w and oy <= y < oy + h:
+                            return ox, oy, w, h
+        except Exception:
+            pass
+        return None
+
+    def take_screenshot(self, x, y):
+        try:
+            SAVE_DIR.mkdir(parents=True, exist_ok=True)
+            ts = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+            path = SAVE_DIR / f"Screenshot from {ts}.png"
+            geo = self.get_monitor_for_point(x, y)
+            if geo:
+                ox, oy, w, h = geo
+                cmd = ["scrot", "-a", f"{ox},{oy},{w},{h}", str(path)]
+            else:
+                cmd = ["scrot", str(path)]
+            res = subprocess.run(cmd, capture_output=True, check=False)
+            if res.returncode == 0 and path.exists():
+                return str(path)
+        except Exception:
+            pass
+        return None
+
+    def start_animation(self):
+        self.stop_animation()
+        try:
+            self.anim_proc = subprocess.Popen(
+                ["python3", str(ANIM_SCRIPT)],
+                env=os.environ.copy(),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+        except Exception:
+            self.anim_proc = None
+
+    def stop_animation(self):
+        if self.anim_proc and self.anim_proc.poll() is None:
+            try:
+                self.anim_proc.terminate()
+                self.anim_proc.wait(timeout=1)
+            except subprocess.TimeoutExpired:
+                try:
+                    self.anim_proc.kill()
+                except Exception:
+                    pass
+        self.anim_proc = None
+
+    def reset(self):
+        self.state = IDLE
+        self.stop_animation()
+
+    def focus_claude(self):
+        try:
+            result = subprocess.run(["xdotool", "search", "--class", "Code"],
+                                    capture_output=True, text=True, check=False)
+            windows = [w for w in result.stdout.strip().splitlines() if w]
+            if windows:
+                wid = windows[-1]
+                subprocess.run(["xdotool", "windowactivate", "--sync", wid], check=False)
+                time.sleep(0.15)
+                subprocess.run(["xdotool", "key", "--clearmodifiers", "ctrl+Escape"], check=False)
+                time.sleep(0.15)
+        except Exception:
+            pass
+
+    def send_to_claude(self, path):
+        msg = f"t the latest screenshot: {path}"
+        try:
+            self.focus_claude()
+            subprocess.run(["xdotool", "type", "--clearmodifiers", msg], check=False)
+            subprocess.run(["xdotool", "key", "Return"], check=False)
+        except Exception:
+            pass
+
+    def paste_to_gemini(self, path):
+        try:
+            if not os.path.exists(path):
+                return
+            with open(path, "rb") as f:
+                subprocess.run(["xclip", "-selection", "clipboard", "-t", "image/png"],
+                               stdin=f, check=False)
+            for name in ["Gemini", "Google DeepMind", "ChatGPT"]:
+                result = subprocess.run(["xdotool", "search", "--name", name],
+                                        capture_output=True, text=True, check=False)
+                windows = [w for w in result.stdout.strip().splitlines() if w]
+                if windows:
+                    wid = windows[0]
+                    subprocess.run(["xdotool", "windowfocus", wid], check=False)
+                    subprocess.run(["xdotool", "key", "--window", wid, "ctrl+v"], check=False)
+                    return
+            subprocess.run(["xdotool", "key", "ctrl+v"], check=False)
+        except Exception:
+            pass
+
+    def handle_kp8(self):
+        with self.lock:
+            if self.state == IDLE:
+                self.start_animation()
+                self.state = WAITING_CLICK
+            else:
+                self.reset()
+
+    def handle_kp7(self):
+        path_to_send = None
+        with self.lock:
+            if self.state == WAITING_CONFIRM and self.latest_path:
+                path_to_send = self.latest_path
+            self.reset()
+        if path_to_send:
+            self.send_to_claude(path_to_send)
+
+    def handle_kp9(self):
+        path_to_paste = None
+        with self.lock:
+            if self.state == WAITING_CONFIRM and self.latest_path:
+                path_to_paste = self.latest_path
+            self.reset()
+        if path_to_paste:
+            self.paste_to_gemini(path_to_paste)
+
+    def on_click(self, x, y, button, pressed):
+        if not pressed:
+            return
+        with self.lock:
+            if self.state == WAITING_CLICK and button == mouse.Button.left:
+                self.stop_animation()
+                path = self.take_screenshot(x, y)
+                if path:
+                    self.latest_path = path
+                    self.state = WAITING_CONFIRM
+                else:
+                    self.reset()
+            elif self.state != IDLE:
+                self.reset()
+
+    def run_socket_server(self):
+        if os.path.exists(SOCK_PATH):
+            try:
+                os.unlink(SOCK_PATH)
+            except Exception:
+                pass
+        server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        server.bind(SOCK_PATH)
+        server.listen(5)
+        while True:
+            try:
+                conn, _ = server.accept()
+                with conn:
+                    cmd = conn.recv(16).decode("utf-8").strip()
+                if cmd == "kp8":
+                    self.handle_kp8()
+                elif cmd == "kp7":
+                    self.handle_kp7()
+                elif cmd == "kp9":
+                    self.handle_kp9()
+            except Exception:
+                pass
+
+    def run(self):
+        t = threading.Thread(target=self.run_socket_server, daemon=True)
+        t.start()
+        with mouse.Listener(on_click=self.on_click) as m_listener:
+            m_listener.join()
 
 
-def show_error(msg):
-    dialog = Gtk.MessageDialog(
-        message_type=Gtk.MessageType.ERROR,
-        buttons=Gtk.ButtonsType.OK,
-        text=msg
-    )
-    dialog.run()
-    dialog.destroy()
-
-
-def get_monitors():
-    display = Gdk.Display.get_default()
-    monitors = []
-    for i in range(display.get_n_monitors()):
-        geo = display.get_monitor(i).get_geometry()
-        monitors.append((geo.x, geo.y, geo.width, geo.height))
-    return monitors
-
-
-def find_monitor(monitors, click_x, click_y):
-    for (x, y, w, h) in monitors:
-        if x <= click_x < x + w and y <= click_y < y + h:
-            return (x, y, w, h)
-    return None
-
-
-def capture_monitor(x, y, w, h):
-    SAVE_DIR.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
-    filename = str(SAVE_DIR / f"Screenshot from {timestamp}.png")
-    root = Gdk.get_default_root_window()
-    while Gtk.events_pending():
-        Gtk.main_iteration()
-    pixbuf = Gdk.pixbuf_get_from_window(root, x, y, w, h)
-    if pixbuf:
-        pixbuf.savev(filename, 'png', [], [])
-        print(f"[screenshot] Saved: {filename}")
-    else:
-        print("[screenshot] Capture failed")
-    return filename
-
-
-class RippleOverlay(Gtk.Window):
-    def __init__(self, monitors):
-        super().__init__()
-        self.monitors = monitors
-        self.ripples = []
-        self.done = False
-
-        screen = self.get_screen()
-        visual = screen.get_rgba_visual()
-        if visual:
-            self.set_visual(visual)
-
-        self.set_app_paintable(True)
-        self.set_decorated(False)
-        self.set_keep_above(True)
-        self.set_skip_taskbar_hint(True)
-        self.set_skip_pager_hint(True)
-        self.set_type_hint(Gdk.WindowTypeHint.DOCK)
-
-        min_x = min(m[0] for m in monitors)
-        min_y = min(m[1] for m in monitors)
-        max_x = max(m[0] + m[2] for m in monitors)
-        max_y = max(m[1] + m[3] for m in monitors)
-
-        self.offset_x = min_x
-        self.offset_y = min_y
-
-        self.move(min_x, min_y)
-        self.set_default_size(max_x - min_x, max_y - min_y)
-
-        self.set_events(
-            Gdk.EventMask.BUTTON_PRESS_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK
-        )
-
-        self.connect('draw', self.on_draw)
-        self.connect('button-press-event', self.on_click)
-        self.connect('motion-notify-event', self.on_motion)
-
-        seat = Gdk.Display.get_default().get_default_seat()
-        pointer = seat.get_pointer()
-        _, cx, cy = pointer.get_position()
-        self.cursor_x = cx
-        self.cursor_y = cy
-
-        self.show_all()
-        GLib.timeout_add(50, self.tick)
-
-    def on_motion(self, widget, event):
-        self.cursor_x = event.x_root
-        self.cursor_y = event.y_root
-        self.queue_draw()
-
-    def tick(self):
-        if self.done:
-            return False
-        now = time.time()
-        if not self.ripples or now - self.ripples[-1][0] > 0.4:
-            self.ripples.append((now, self.cursor_x, self.cursor_y))
-        self.ripples = [r for r in self.ripples if now - r[0] < 1.0]
-        self.queue_draw()
-        return True
-
-    def on_draw(self, widget, cr):
-        cr.set_operator(cairo.OPERATOR_CLEAR)
-        cr.paint()
-        cr.set_operator(cairo.OPERATOR_OVER)
-
-        now = time.time()
-        for (start, rx, ry) in self.ripples:
-            age = now - start
-            if age > 1.0:
-                continue
-            progress = age / 1.0
-            radius = progress * 80
-            alpha = (1.0 - progress) * 0.7
-            lx = rx - self.offset_x
-            ly = ry - self.offset_y
-            cr.set_source_rgba(0.3, 0.85, 1.0, alpha)
-            cr.set_line_width(2.5)
-            cr.arc(lx, ly, radius, 0, 2 * math.pi)
-            cr.stroke()
-
-    def on_click(self, widget, event):
-        if event.button == 1:
-            click_x = int(event.x_root)
-            click_y = int(event.y_root)
-            monitor = find_monitor(self.monitors, click_x, click_y)
-            self.done = True
-            self.hide()
-            if monitor:
-                capture_monitor(*monitor)
-            Gtk.main_quit()
-
-
-def main():
-    if not f_drive_mounted():
-        show_error("F drive is not mounted — screenshot cancelled.\nPlease connect the F drive and try again.")
-        return
-
-    monitors = get_monitors()
-    if not monitors:
-        print("[screenshot] No monitors found")
-        return
-    overlay = RippleOverlay(monitors)
-    Gtk.main()
-
-
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    agent = ScreenshotAgent()
+    agent.run()
