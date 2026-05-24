@@ -19,3 +19,4 @@
 - [Session May 21 2026 PM](session-05-21-2026-2051.md) — system_architecture/ folder, MASTER.md startup chain, CLAUDE.md restructure, browser Copy/Clear All + editable paste area, CADE-PROFILE rebuilt
 - [Session May 22 2026 PM](session-05-22-2026-1954.md) — F drive immutability audit, hourly backup agent plan v7 (ChatGPT+Perplexity agreed, Gemini pending), consensus agent added to to-do
 - [Session May 23 2026 AM](session-05-23-2026-0747.md) — Backup plan v7→v10, permission rule fixed, F-WORM→Immutable Drive, bugs list, concern 4 open (immutability/sudo)
+- [Tuesday Programming Sessions](project_tuesday_programming.md) — Cade reviews programming concepts every Tuesday; always explain code in plain English
