@@ -21,4 +21,5 @@
 - [Session May 22 2026 PM](session-05-22-2026-1954.md) — F drive immutability audit, hourly backup agent plan v7 (ChatGPT+Perplexity agreed, Gemini pending), consensus agent added to to-do
 - [Session May 23 2026 AM](session-05-23-2026-0747.md) — Backup plan v7→v10, permission rule fixed, F-WORM→Immutable Drive, bugs list, concern 4 open (immutability/sudo)
 - [Session May 24 2026 PM](session-05-24-2026-1736.md) — Browser rewritten PyQt6→tkinter, CLAUDE.md renumbered 1-11, screenshot_agent logging added, to-do list cleaned up
+- [Session May 25 2026](../../../ImmutableDrive/sessions/session-2026-05-25.md) — NVIDIA driver fixed, agents autostart fixed, mic agent deleted (broken), CCBrowser2 GUI built with terminal bridge, VS Code replacement project started
 - [Tuesday Programming Sessions](project_tuesday_programming.md) — Cade reviews programming concepts every Tuesday; always explain code in plain English
