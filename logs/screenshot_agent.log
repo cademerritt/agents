@@ -2,3 +2,5 @@
 2026-05-24 19:46:41 INFO Socket server listening at /tmp/screenshot_agent.sock
 2026-05-24 19:46:54 INFO Screenshot saved: /media/cade/ImmutableDrive/screenshots/Screenshot from 2026-05-24 19-46-53.png
 2026-05-24 19:46:56 INFO Sent to Claude: /media/cade/ImmutableDrive/screenshots/Screenshot from 2026-05-24 19-46-53.png
+2026-05-24 19:59:59 INFO Screenshot saved: /media/cade/ImmutableDrive/screenshots/Screenshot from 2026-05-24 19-59-59.png
+2026-05-24 20:00:06 INFO Sent to Claude: /media/cade/ImmutableDrive/screenshots/Screenshot from 2026-05-24 19-59-59.png
