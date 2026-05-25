@@ -16,10 +16,13 @@ REMINDER_FILE = Path("/tmp/reminder.txt")
 HISTORY_MAX   = 20
 WINDOW_CAP    = 100
 
-BG     = "#1a1a1a"
-FG     = "#e0e0e0"
-BTN_BG = "#2d2d2d"
-FONT   = ("Courier", 14)
+BG        = "#141414"
+FG        = "#ffffff"
+BTN_BG    = "#252526"
+INPUT_BG  = "#252526"
+SEPARATOR = "#3e3e3e"
+ORANGE    = "#e8a045"
+FONT      = ("Courier", 14)
 
 
 def get_screen_geometry(screen_num):
@@ -72,6 +75,25 @@ class BrowserWindow:
             relief=tk.FLAT, padx=24, pady=24
         )
         self.text.pack(fill=tk.BOTH, expand=True)
+
+        # separator line
+        tk.Frame(self.win, bg=SEPARATOR, height=1).pack(fill=tk.X)
+
+        # bottom input area
+        bottom = tk.Frame(self.win, bg=BTN_BG, pady=12)
+        bottom.pack(fill=tk.X)
+
+        input_frame = tk.Frame(bottom, bg=ORANGE, bd=1)
+        input_frame.place(relx=0.5, rely=0.5, anchor="center")
+        bottom.update_idletasks()
+
+        self.input_box = tk.Text(
+            input_frame, bg=INPUT_BG, fg=FG, font=FONT,
+            insertbackground=FG, wrap=tk.WORD,
+            relief=tk.FLAT, padx=10, pady=8,
+            height=2, width=60
+        )
+        self.input_box.pack(padx=1, pady=1)
 
         self._load()
         self._poll()

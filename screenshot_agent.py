@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime
 from pynput import mouse
 
-SAVE_DIR    = Path("/media/cade/ImmutableDrive/screenshots")
+SAVE_DIR    = Path("/home/cade/screenshots")
 ANIM_SCRIPT = Path(__file__).parent / "screenshot_anim.py"
 SOCK_PATH   = "/tmp/screenshot_agent.sock"
 LOG_PATH    = Path(__file__).parent / "logs/screenshot_agent.log"
