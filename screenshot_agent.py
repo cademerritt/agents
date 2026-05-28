@@ -104,12 +104,12 @@ class ScreenshotAgent:
 
     def focus_claude(self):
         try:
-            result = subprocess.run(["xdotool", "search", "--class", "Code"],
+            result = subprocess.run(["xdotool", "search", "--class", "Cursor"],
                                     capture_output=True, text=True, check=False)
             windows = [w for w in result.stdout.strip().splitlines() if w]
             if windows:
                 wid = windows[-1]
-                subprocess.run(["xdotool", "windowactivate", "--sync", wid], check=False)
+                subprocess.run(["xdotool", "windowactivate", wid], check=False)
                 time.sleep(0.15)
         except Exception:
             log.exception("focus_claude failed")
